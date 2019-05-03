@@ -1,22 +1,41 @@
-function PomodoroCreator(props) {
-    const { onCreate } = props;
-    return (
-        <div className="TimeboxCreator">
-            <div>
-                <label>
-                    Co robisz? <input type="text" />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Ile minut? <input type="number" />
-                </label>
-            </div>
-            <div>
-                <button onClick={onCreate}>Utwórz</button>
-            </div>
-        </div>
-    );
+class PomodoroCreator extends React.Component {
+    constructor(props) {
+        super(props);
+        // Referencje do pól formularza
+        this.titleInput = React.createRef();
+        this.minutesInput = React.createRef();
+    }
+
+    handleSubmit = (event) => {
+        console.log('Dodajemy:',this.titleInput.current.value);
+        event.preventDefault(); // aby się formularz nie zasubmitował
+        this.props.onCreate({
+            title: this.titleInput.current.value,
+            totalTimeMinutes: this.minutesInput.current.value            
+        });
+    };
+
+    render() {
+        return (
+            <form onSubmit={this.handleSubmit} className="TimeboxCreator">
+                <div>
+                    <label>
+                        Co robisz? <input 
+                        ref={this.titleInput} 
+                        type="text" />
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        Ile minut? <input ref={this.minutesInput} type="number" />
+                    </label>
+                </div>
+                <div>
+                    <button>Utwórz</button>
+                </div>
+            </form>
+        );
+    }
 }
 
 function Timebox({ identifier, title, totalTimeMinutes, onDelete, onEdit }) {
@@ -42,12 +61,12 @@ class TimeboxList extends React.Component {
         ]
     };
 
-    handleCreate = (event) => {
+    handleCreate = (box) => {
         this.setState((prevState) => {
             const nowy = {
                 key: uuidv4(),
-                title: "Przykładowy task",
-                totalTimeMinutes: 13
+                title: box.title || "Przykładowy task",
+                totalTimeMinutes: box.totalTimeMinutes || 25
             };
             const timeboxes = [nowy, ...prevState.timeboxes];
             return { timeboxes };
@@ -84,9 +103,7 @@ class TimeboxList extends React.Component {
                         onDelete={() => {
                             this.handleDelete(box.key);
                         }}
-                        onEdit={() => 
-                            this.updateTimebox(box.key, {...box, title: 'Ulepszony'})
-                        }
+                        onEdit={() => this.updateTimebox(box.key, { ...box, title: "Ulepszony" })}
                     />
                 ))}
             </>
