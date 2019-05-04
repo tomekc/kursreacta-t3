@@ -73,3 +73,18 @@ h3 {
     margin-top: 4px;
     margin-bottom: 1em;
 }
+
+.inline-form {
+    margin: 20px;
+    border: 1px solid #888;
+    background: #eee;
+    padding: 16px;
+}
+
+.inline-form button {
+    margin-left: 0px;
+}
+
+.inline-form-row {
+    margin-bottom: 8px;
+}
